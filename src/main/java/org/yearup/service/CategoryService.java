@@ -2,6 +2,7 @@ package org.yearup.service;
 
 import org.springframework.stereotype.Service;
 import org.yearup.models.Category;
+import org.yearup.models.Product;
 import org.yearup.repository.CategoryRepository;
 
 import java.util.List;
@@ -25,10 +26,11 @@ public class CategoryService
         return categoryRepository.findAll();
     }
 
-    public Optional<Category> getCategoryById(int categoryId)
+    //public Optional<Category> getCategoryById(int categoryId)
+    public Category getCategoryById(int categoryId)
     {
-        // get category by id
-        return categoryRepository.findById(categoryId);
+        return categoryRepository.findById(categoryId).orElse(null);
+
     }
 
 

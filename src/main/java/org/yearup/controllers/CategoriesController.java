@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.yearup.models.Category;
 import org.yearup.models.Product;
 import org.yearup.repository.ProductRepository;
@@ -51,10 +52,17 @@ public class CategoriesController
 
     // add the appropriate annotation for a get action --
     @GetMapping("/{id}")
-    public Optional<ResponseEntity<Category>>getCategoryById(@PathVariable int id)
+    //public Optional<ResponseEntity<Category>>getCategoryById(@PathVariable int id)
+    public Category getCategoryById(@PathVariable int id)
     {
+        Category category = categoryService.getCategoryById(id);
+
+        if (category == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        return category;
         // get the category by id
-        return categoryService.getCategoryById(id).map(ResponseEntity::ok);
+       // return categoryService.getCategoryById(id).map(ResponseEntity::ok);
     }
 
     // the url to return all products in category 1 would look like this
@@ -80,12 +88,12 @@ public class CategoriesController
 
     // add annotation to call this method for a PUT (update) action - the url path must include the categoryId
     // add annotation to ensure that only an ADMIN can call this function
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    // @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{categoryId}")
-    public Category updateCategory(@PathVariable int id, @RequestBody Category category)
+    public Category updateCategory(@PathVariable int categoryId, @RequestBody Category category)
     {
         // update the category by id and return the updated category (200 OK)
-        Category updated = categoryService.updateCategory(id, category);
+        Category updated = categoryService.updateCategory(categoryId, category);
         return ResponseEntity.ok(updated).getBody();
 
         //return categoryService.updateCategory(id, category);
